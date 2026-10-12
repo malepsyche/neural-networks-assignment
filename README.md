@@ -23,3 +23,36 @@ flowchart TD
     S --> DS[Rescale<br/>× target_std + target_mean]
     DS --> OUT[Predicted Resale Price]
 ```
+### Baseline Parameter Count
+The baseline model has **3,505 trainable parameters**.
+### Embedding Layers
+The four categorical features have cardinalities of 13, 27, 44, and 18, with an embedding dimension of 8 for each feature.
+$$
+13(8) + 27(8) + 44(8) + 18(8)
+$$
+$$
+= 104 + 216 + 352 + 144
+= \mathbf{816}
+$$
+### First Linear Layer
+The four 8-dimensional embeddings produce 32 features. Together with the 6 continuous features, the input dimension is 38.
+The first linear layer maps 38 inputs to 64 hidden units:
+$$
+38(64) + 64 = \mathbf{2496}
+$$
+where the additional 64 parameters are the biases.
+### Layer Normalization
+Layer normalization contains one learnable scale and one learnable bias for each of the 64 hidden units:
+$$
+64 + 64 = \mathbf{128}
+$$
+### Output Layer
+The output layer maps the 64 hidden units to one output:
+$$
+64(1) + 1 = \mathbf{65}
+$$
+### Total Trainable Parameters
+Therefore, the total number of trainable parameters is:
+$$
+816 + 2496 + 128 + 65 = \boxed{\mathbf{3505}}
+$$
