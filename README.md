@@ -45,16 +45,11 @@ The output layer maps the 64 hidden units to one output with 64 weight parameter
 ### Total Trainable Parameters
 `816 + 2496 + 128 + 65 = 3505`
 ### Hyperparameter Optimisation
-==============================
-BEST CONFIGURATION
-==============================
+BEST CONFIGURATION:
 Hidden width: 128
 Embedding dimension: 12
 Best validation RMSE: 59,766.91
 
-==============================
-ALL RESULTS
-==============================
     Hidden    Embedding      Best Val RMSE
        128           12          59,766.91
        256            2          59,926.48
@@ -82,4 +77,4 @@ ALL RESULTS
         16            4          68,879.52
         32            2          69,203.99
 ### Training and Validation RMSE
-![Training and Validation RMSE](outputs/tuning/best_learning_curve.png)
+![Training and Validation RMSE](hdb-price-prediction-assignment/outputs/tuning/best_learning_curve.png)
