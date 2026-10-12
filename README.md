@@ -28,31 +28,20 @@ flowchart TD
 The baseline model has **3,505 trainable parameters**.
 #### Embedding Layers
 The four categorical features have cardinalities of 13, 27, 44, and 18, with an embedding dimension of 8 for each feature.
-$$
-13(8) + 27(8) + 44(8) + 18(8)
-$$
-$$
-= 104 + 216 + 352 + 144 = 816
-$$
+`13(8) + 27(8) + 44(8) + 18(8)`
+`= 104 + 216 + 352 + 144`
+`= 816`
 #### First Linear Layer
 The four 8-dimensional embeddings produce 32 features. Together with the 6 continuous features, the input dimension is 38.
 The first linear layer maps 38 inputs to 64 hidden units:
-$$
-38(64) + 64 = 2496
-$$
+`38(64) + 64 = 2496`
 where 38x64 represent 38 weight parameters for each sample multiplied by input width 64, and 64 additional bias parameters.
 #### Layer Normalization
 Layer normalization contains one learnable scale and one learnable bias for each of the 64 hidden units:
-$$
-64 + 64 = 128
-$$
+`64 + 64 = 128`
 #### Output Layer
 The output layer maps the 64 hidden units to one output with 64 weight parameters:
-$$
-64(1) + 1 = 65
-$$
+`64(1) + 1 = 65`
 ### Total Trainable Parameters
-$$
-816 + 2496 + 128 + 65 = 3505
-$$
+`816 + 2496 + 128 + 65 = 3505`
 **Total trainable parameters: 3,505**
