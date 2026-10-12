@@ -44,4 +44,3 @@ The output layer maps the 64 hidden units to one output with 64 weight parameter
 `64(1) + 1 = 65`
 ### Total Trainable Parameters
 `816 + 2496 + 128 + 65 = 3505`
-**Total trainable parameters: 3,505**
