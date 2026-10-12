@@ -93,6 +93,14 @@ def main():
         config,
     )
 
+    num_parameters = sum(
+        p.numel() for p in model.parameters() if p.requires_grad
+    )
+    print(f"Trainable parameters: {num_parameters:,}")
+    print("Cardinalities:", data["cardinalities"])
+    for name, parameter in model.named_parameters():
+        print(name, parameter.shape, parameter.numel())
+
     best_epoch = train_model(model, data["train"], data["validation"], config)
     train_rmse = calculate_rmse(model, data["train"], config.batch_size)
     validation_rmse = calculate_rmse(model, data["validation"], config.batch_size)
