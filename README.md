@@ -77,4 +77,4 @@ Best validation RMSE: 59,766.91
         16            4          68,879.52
         32            2          69,203.99
 ### Training and Validation RMSE
-![Training and Validation RMSE](hdb-price-prediction-assignment/outputs/tuning/best_learning_curve.png)
+![Training and Validation RMSE](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/tuning/best_learning_curve.png)
