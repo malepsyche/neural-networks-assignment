@@ -79,7 +79,7 @@ Best validation RMSE: 59,766.91
 ### Training and Validation RMSE
 ![Training and Validation RMSE](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/tuning/best_learning_curve.png)
 ### Retrain model on combined train and validation sets:
-![Training and Validation RMSE](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/final/final_learning_curve.png)
+![Train and test RMSE](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/final/final_learning_curve.png)
 
     epoch 01 | train RMSE 44,383.07 | test RMSE 107,977.41
     epoch 02 | train RMSE 43,615.70 | test RMSE 93,158.23
@@ -146,9 +146,101 @@ There is little evidence of substantial underfitting. Although the training RMSE
         Baseline  99,173.2406 5,620.7437   0.6598  0.0395
     No Embeddings 111,889.0250 4,457.3152   0.5676  0.0347
         Sigmoid  96,683.1500 7,449.7880   0.6760  0.0480
+![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/ablation/ablation_r2.png)
+![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/ablation/ablation_rmse.png)
 ### Discussion of ablation experiments:
 The ablation experiments demonstrate that the categorical embeddings make an important contribution to predictive performance. The baseline model achieved a mean test RMSE of SGD 99,173 ± 5,621 and mean R^2 of 0.6598 ± 0.0395 across five seeds. Removing all categorical embeddings increased the mean RMSE to SGD 111,889 ± 4,457 and reduced mean R^2 to 0.5676 ± 0.0347. This corresponds to an approximately 12.8% increase in RMSE, indicating that the categorical variables provide substantial predictive information beyond that contained in the six continuous features.
 
 Replacing ReLU with Sigmoid produced a smaller and less conclusive change. The Sigmoid model achieved the lowest mean RMSE of SGD 96,683 ± 7,450 and highest mean R^2 of 0.6760 ± 0.0480. This represents an approximately 2.5% reduction in mean RMSE relative to the ReLU baseline. However, the Sigmoid model also exhibited the largest standard deviation across seeds, indicating greater sensitivity to random initialisation. Therefore, the results do not demonstrate an advantage of ReLU over Sigmoid for this task; rather, both activations perform comparably, with Sigmoid achieving slightly better average performance but lower consistency.
 
 Overall, the experiments indicate that feature representation has a considerably greater effect than the choice between ReLU and Sigmoid activation. Removing categorical embeddings substantially degraded performance across all five seeds, whereas changing the activation function caused only a relatively small change in average performance.
+
+## A3
+### Wide and Deep results:
+    ==============================
+    LAMBDA SEARCH
+    ==============================
+    lambda    0 | validation RMSE 62,553.89
+    lambda 0.25 | validation RMSE 61,050.42
+    lambda  0.5 | validation RMSE 61,499.38
+    lambda    1 | validation RMSE 61,479.33
+    lambda    2 | validation RMSE 58,170.70
+
+    Best lambda: 2.0
+
+    ==============================
+    FIVE-SEED EVALUATION
+    ==============================
+    seed 1 | RMSE 94,824.51 | R² 0.6898
+    seed 2 | RMSE 91,874.73 | R² 0.7088
+    seed 3 | RMSE 98,780.30 | R² 0.6634
+    seed 4 | RMSE 92,375.70 | R² 0.7056
+    seed 5 | RMSE 99,291.86 | R² 0.6599
+
+    ==============================
+    FINAL WIDE-AND-DEEP RESULTS
+    ==============================
+    Lambda: 2.0
+    Test RMSE: 95,429.42 ± 3,481.15
+    Test R²: 0.6855 ± 0.0230
+![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/wide_deep/lambda_search.png)
+![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/wide_deep/rmse_comparison.png)
+![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/wide_deep/r2_comparison.png)
+### Discussion:
+The lambda search identified \lambda=2 as the optimal value achieving the lowest validation RMSE of SGD 58,170.70. In comparison, \lambda=0, which removes the contribution of the linear branch from the prediction, produced a validation RMSE of SGD 62,553.89. This provides evidence that incorporating the linear branch improves generalisation.
+
+Using \lambda=2, the wide-and-deep model achieved a mean test RMSE of SGD 95,429 ± 3,481 and mean R^2 of 0.6855 ± 0.0230 across five seeds. The corresponding five-seed A1 baseline achieved SGD 99,173 ± 5,621 and R^2=0.6598\pm0.0395. Thus, the wide-and-deep architecture reduced mean RMSE by approximately 3.8% while also producing lower variation across random seeds.
+
+A possible mechanism is that the parallel linear branch provides a direct representation of additive relationships between the input features and resale price, while the MLP branch models nonlinear relationships and feature interactions. 
+
+(Limitation) However, adding the linear branch increases the model’s number of trainable parameters, so some of the improvement may result from increased model capacity rather than specifically from the decomposition into linear and nonlinear components. 
+## A4
+### Captum FeatureAblation results
+    ==============================
+    A1 Baseline
+    ==============================
+    flat_model_type           $   57,545.57
+    floor_area_sqm            $   56,733.25
+    town                      $   48,265.39
+    remaining_lease_years     $   41,323.88
+    dist_to_dhoby             $   35,782.34
+    storey_range              $   24,972.46
+    dist_to_nearest_stn       $   21,373.50
+    month                     $   15,417.76
+    eigenvector_centrality    $    5,989.59
+    degree_centrality         $    3,295.08
+
+    Top 3:
+    1. flat_model_type ($57,545.57)
+    2. floor_area_sqm ($56,733.25)
+    3. town ($48,265.39)
+
+    ==============================
+    A3 Wide-and-Deep
+    ==============================
+    flat_model_type           $   66,390.06
+    floor_area_sqm            $   57,648.34
+    town                      $   42,768.50
+    remaining_lease_years     $   42,661.44
+    dist_to_dhoby             $   33,096.89
+    storey_range              $   31,450.37
+    month                     $   22,669.65
+    dist_to_nearest_stn       $   19,513.39
+    eigenvector_centrality    $    6,244.37
+    degree_centrality         $    4,233.68
+
+    Top 3:
+    1. flat_model_type ($66,390.06)
+    2. floor_area_sqm ($57,648.34)
+    3. town ($42,768.50)
+![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/feature_ablation/baseline_feature_importance.png)
+![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/feature_ablation/wide_deep_feature_importance.png)
+Feature ablation produced highly similar feature-importance rankings for the A1 baseline and A3 wide-and-deep models. For both models, the three most important features were flat_model_type, floor_area_sqm, and town. In the baseline, their mean absolute attributions were SGD 57,545.57, SGD 56,733.25, and SGD 48,265.39 respectively. For the wide-and-deep model, the corresponding values were SGD 66,390.06, SGD 57,648.34, and SGD 42,768.50.
+
+The similarity of the rankings indicates that the addition of the linear branch did not substantially alter which input features the model relies upon most. The ordering of eight of the ten features remained identical. 
+
+However, attribution magnitudes changed for several features. For example, the importance of flat_model_type increased from approximately SGD 57.5k to SGD 66.4k, while the importance of town decreased from SGD 48.3k to SGD 42.8k, suggesting that how predictive influence is distributed among features has changed.
+
+The results are also consistent with the A2 ablation experiment, where removing the categorical embeddings degraded predictive performance. Two of the three highest-ranked features, flat_model_type and town, are categorical.
+
+One limitation of FeatureAblation is that the resulting importance scores depend on the chosen baseline. Continuous features were replaced by their training mean, while categorical features were replaced by the unknown-category value. Different baselines could therefore result in different attribution magnitudes and feature rankings.
