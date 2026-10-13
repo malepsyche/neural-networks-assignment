@@ -78,3 +78,25 @@ Best validation RMSE: 59,766.91
         32            2          69,203.99
 ### Training and Validation RMSE
 ![Training and Validation RMSE](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/tuning/best_learning_curve.png)
+### Retrain model on combined train and validation sets:
+![Training and Validation RMSE](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/final/final_learning_curve.png)
+(hdb-assignment) ben@192 hdb-price-prediction-assignment-main % python src/final_train.py 
+epoch 01 | train RMSE 44,383.07 | test RMSE 107,977.41
+epoch 02 | train RMSE 43,615.70 | test RMSE 93,158.23
+epoch 03 | train RMSE 40,706.75 | test RMSE 104,607.33
+epoch 04 | train RMSE 40,913.82 | test RMSE 97,495.47
+epoch 05 | train RMSE 39,331.23 | test RMSE 99,816.12
+epoch 06 | train RMSE 39,456.30 | test RMSE 104,240.83
+epoch 07 | train RMSE 39,469.28 | test RMSE 105,467.51
+epoch 08 | train RMSE 39,193.23 | test RMSE 99,124.45
+epoch 09 | train RMSE 38,682.61 | test RMSE 100,854.71
+epoch 10 | train RMSE 39,392.42 | test RMSE 92,690.02
+epoch 11 | train RMSE 39,049.87 | test RMSE 92,375.76
+epoch 12 | train RMSE 38,113.98 | test RMSE 102,521.88
+epoch 13 | train RMSE 38,359.75 | test RMSE 91,237.82
+FINAL RESULTS
+Hidden width: 128
+Embedding dimension: 12
+Epochs: 13
+Test RMSE: 91,237.82
+Test R²: 0.7128
