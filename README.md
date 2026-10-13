@@ -99,12 +99,56 @@ Hidden width: 128\
 Embedding dimension: 12\
 Epochs: 13\
 Test RMSE: 91,237.82\
-Test R²: 0.7128\
+Test R²: 0.7128
 ### Discussion of Model Performance:
-The final model used a hidden-layer width of 128 and an embedding dimension of 12, selected based on validation performance during hyperparameter tuning. The model was retrained for 13 epochs (based on lowest validation RMSE during the initial training) using the combined training and validation data from 2017–2021 and evaluated on the unseen 2022 test data.\
+The final model used a hidden-layer width of 128 and an embedding dimension of 12, selected based on validation performance during hyperparameter tuning. The model was retrained for 13 epochs (based on lowest validation RMSE during the initial training) using the combined training and validation data from 2017–2021 and evaluated on the unseen 2022 test data.
 
-The training RMSE generally decreased from 44,383.07 SGD at epoch 1 to 38,359.75 SGD at epoch 13, indicating that the model continued to fit the training data as training progressed. In comparison, the test RMSE was substantially higher and fluctuated considerably between epochs. The final model achieved a test RMSE of 91,237.82 SGD and an R^2 score of 0.7128. The R^2 value indicates that the model explains approximately 71.3% of the variation in 2022 resale prices.\
+The training RMSE generally decreased from 44,383.07 SGD at epoch 1 to 38,359.75 SGD at epoch 13, indicating that the model continued to fit the training data as training progressed. In comparison, the test RMSE was substantially higher and fluctuated considerably between epochs. The final model achieved a test RMSE of 91,237.82 SGD and an R^2 score of 0.7128. The R^2 value indicates that the model explains approximately 71.3% of the variation in 2022 resale prices.
 
-The large difference between training and test RMSE may indicate some degree of overfitting. However, the model was trained using transactions up to 2021 and tested exclusively on transactions from 2022. Changes in HDB resale prices and market conditions between these periods can cause the test distribution to differ from the training distribution. Therefore, the higher test error is likely attributable to a combination of model overfitting and temporal distribution shift, rather than overfitting alone.\
+The large difference between training and test RMSE may indicate some degree of overfitting. However, the model was trained using transactions up to 2021 and tested exclusively on transactions from 2022. Changes in HDB resale prices and market conditions between these periods can cause the test distribution to differ from the training distribution. Therefore, the higher test error is likely attributable to a combination of model overfitting and temporal distribution shift, rather than overfitting alone.
 
-There is little evidence of underfitting, as the model achieves a substantially lower error on its training data and the selected architecture has sufficient capacity to model the training set. 
+There is little evidence of substantial underfitting. Although the training RMSE is still decreasing toward the end of training, suggesting that the model has not fully converged and could potentially improve with additional epochs, it already achieves a relatively low training error. The test RMSE and R² further indicate that the learned relationship generalises reasonably well to unseen data. Therefore, the continuing decrease in training RMSE is better interpreted as incomplete convergence rather than strong evidence of insufficient model capacity
+
+## A2
+### Ablation experiment results:
+
+    ==============================
+    Baseline
+    ==============================
+    seed 1 | RMSE 108,553.18 | R² 0.5935
+    seed 2 | RMSE 95,140.68 | R² 0.6877
+    seed 3 | RMSE 98,216.47 | R² 0.6672
+    seed 4 | RMSE 99,383.36 | R² 0.6593
+    seed 5 | RMSE 94,572.52 | R² 0.6915
+
+    ==============================
+    No Embeddings
+    ==============================
+    seed 1 | RMSE 110,278.54 | R² 0.5805
+    seed 2 | RMSE 114,545.95 | R² 0.5474
+    seed 3 | RMSE 118,275.66 | R² 0.5174
+    seed 4 | RMSE 109,010.13 | R² 0.5901
+    seed 5 | RMSE 107,334.84 | R² 0.6026
+
+    ==============================
+    Sigmoid
+    ==============================
+    seed 1 | RMSE 100,191.81 | R² 0.6537
+    seed 2 | RMSE 102,692.04 | R² 0.6362
+    seed 3 | RMSE 101,286.34 | R² 0.6461
+    seed 4 | RMSE 94,755.66 | R² 0.6903
+    seed 5 | RMSE 84,489.90 | R² 0.7537
+
+    ==============================
+    ABLATION SUMMARY
+    ==============================
+            model    mean_rmse   std_rmse  mean_r2  std_r2
+        Baseline  99,173.2406 5,620.7437   0.6598  0.0395
+    No Embeddings 111,889.0250 4,457.3152   0.5676  0.0347
+        Sigmoid  96,683.1500 7,449.7880   0.6760  0.0480
+### Discussion of ablation experiments:
+The ablation experiments demonstrate that the categorical embeddings make an important contribution to predictive performance. The baseline model achieved a mean test RMSE of SGD 99,173 ± 5,621 and mean R^2 of 0.6598 ± 0.0395 across five seeds. Removing all categorical embeddings increased the mean RMSE to SGD 111,889 ± 4,457 and reduced mean R^2 to 0.5676 ± 0.0347. This corresponds to an approximately 12.8% increase in RMSE, indicating that the categorical variables provide substantial predictive information beyond that contained in the six continuous features.
+
+Replacing ReLU with Sigmoid produced a smaller and less conclusive change. The Sigmoid model achieved the lowest mean RMSE of SGD 96,683 ± 7,450 and highest mean R^2 of 0.6760 ± 0.0480. This represents an approximately 2.5% reduction in mean RMSE relative to the ReLU baseline. However, the Sigmoid model also exhibited the largest standard deviation across seeds, indicating greater sensitivity to random initialisation. Therefore, the results do not demonstrate an advantage of ReLU over Sigmoid for this task; rather, both activations perform comparably, with Sigmoid achieving slightly better average performance but lower consistency.
+
+Overall, the experiments indicate that feature representation has a considerably greater effect than the choice between ReLU and Sigmoid activation. Removing categorical embeddings substantially degraded performance across all five seeds, whereas changing the activation function caused only a relatively small change in average performance.
