@@ -100,3 +100,11 @@ Embedding dimension: 12\
 Epochs: 13\
 Test RMSE: 91,237.82\
 Test R²: 0.7128\
+### Discussion of Model Performance:
+The final model used a hidden-layer width of 128 and an embedding dimension of 12, selected based on validation performance during hyperparameter tuning. The model was retrained for 13 epochs (based on lowest validation RMSE during the initial training) using the combined training and validation data from 2017–2021 and evaluated on the unseen 2022 test data.\
+
+The training RMSE generally decreased from 44,383.07 SGD at epoch 1 to 38,359.75 SGD at epoch 13, indicating that the model continued to fit the training data as training progressed. In comparison, the test RMSE was substantially higher and fluctuated considerably between epochs. The final model achieved a test RMSE of 91,237.82 SGD and an R^2 score of 0.7128. The R^2 value indicates that the model explains approximately 71.3% of the variation in 2022 resale prices.\
+
+The large difference between training and test RMSE may indicate some degree of overfitting. However, the model was trained using transactions up to 2021 and tested exclusively on transactions from 2022. Changes in HDB resale prices and market conditions between these periods can cause the test distribution to differ from the training distribution. Therefore, the higher test error is likely attributable to a combination of model overfitting and temporal distribution shift, rather than overfitting alone.\
+
+There is little evidence of underfitting, as the model achieves a substantially lower error on its training data and the selected architecture has sufficient capacity to model the training set. 
