@@ -1,16 +1,16 @@
 # neural-networks-assignment
 ## How to run Part A
 `cd hdb-price-prediction-assignment/src`\
-A1: run `python a1_tune.py` and `python a1_final_train.py`\
+A1: run `python a1_tune.py` to completion before running `python a1_final_train.py`\
 A2: run `python a2_ablation.py`\
 A3: run `python a3_wide_deep.py`\
 A4: run `python a4_feature_ablation.py`
 ## How to run Part B
 `cd CNN/src`\
-B1: run `python a1_tune.py` and `python a1_final_train.py`\
-B2: run `python a2_ablation.py`\
-B3: run `python a3_wide_deep.py`\
-B4: run `python a4_feature_ablation.py`
+B1: run `python b1_train.py`\
+B2: run `python b2_train.py`\
+B3: run `python b3_train.py` to completion before running `python b3_compare.py`
+B4: run `python b4_grad_cam.py`
 ## A1 
 ### Baseline Model Architecture
 ```mermaid
@@ -294,3 +294,97 @@ measures correct detection of negative cases.
 The high sensitivity but substantially lower specificity shows that the
 model performs very differently across the two classes, which would not be
 apparent from accuracy alone.
+## B2: VGG-like CNN
+### Batch Size Selection
+The best learning rate from B1, **1e-3**, was used for all experiments.
+    | Batch Size | Best Epoch | Validation Loss | Classification Error | Sensitivity | Specificity |
+    |---:|---:|---:|---:|---:|---:|
+    | 16 | 12 | 0.0595 | 0.0191 | 0.9820 | 0.9778 |
+    | **32** | **42** | **0.0696** | **0.0172** | **0.9897** | **0.9630** |
+    | 64 | 27 | 0.0710 | 0.0210 | 0.9897 | 0.9481 |
+    | 128 | 30 | 0.0792 | 0.0229 | 0.9846 | 0.9556 |
+    | 256 | 47 | 0.0698 | 0.0248 | 0.9923 | 0.9259 |
+The optimal batch size was **32**, which achieved the lowest validation
+classification error of **0.0172** (98.28% validation accuracy).
+
+![Validation Loss](https://github.com/malepsyche/neural-networks-assignment/blob/main/CNN/outputs/b2/validation_loss.png)
+![Validation Accuracy](https://github.com/malepsyche/neural-networks-assignment/blob/main/CNN/outputs/b2/validation_accuracy.png)
+
+### Discussion
+Batch size **32** achieved the lowest validation classification error. Smaller batch sizes generally reached strong validation performance earlier. Increasing the batch size beyond
+32 did not improve validation classification error.
+### Test Results
+    | Metric | Result |
+    |---|---:|
+    | Accuracy | **89.74%** |
+    | Sensitivity | **99.49%** |
+    | Specificity | **73.50%** |
+The final model maintained very high sensitivity but lower specificity,
+indicating better detection of positive cases than negative
+cases.
+## B3: ResNet-like CNN
+The ResNet-like model was trained using the optimal learning rate of **1e-3**
+from B1 and batch size of **32** from B2.
+The best validation performance occurred at epoch **10**, with a validation
+accuracy of **97.71%** and classification error of **2.29%**.
+### Test Results
+    | Metric | Result |
+    |---|---:|
+    | Accuracy | **87.34%** |
+    | Sensitivity | **99.49%** |
+    | Specificity | **67.09%** |
+    | Classification Error | **12.66%** |
+### Architecture Comparison
+FLOPs are computed assuming one multiply-accumulate (MAC) corresponds to two
+floating-point operations
+    | Architecture | Accuracy | Sensitivity | Specificity | Classification Error | Learnable Parameters | FLOPs |
+    |---|---:|---:|---:|---:|---:|---:|
+    | B1 AlexNet-like | 85.42% | 99.49% | 61.97% | 14.58% | 99,569 | 39,991,360 |
+    | **B2 VGG-like** | **89.74%** | **99.49%** | **73.50%** | **10.26%** | **18,185** | **20,385,920** |
+    | B3 ResNet-like | 87.34% | 99.49% | 67.09% | 12.66% | 77,169 | 26,386,688 |
+### Comparison
+The **VGG-like model (B2)** performed best, achieving the highest accuracy
+(89.74%) and specificity (73.50%) while maintaining the same high sensitivity
+(99.49%) as B1 and B3. It was also the most computationally efficient, using
+only **18,185 parameters** and **20.39 million FLOPs**.
+
+The AlexNet-like model has the largest parameter count and computational cost
+mainly due to its larger convolution kernels and fully connected layers. Its
+advantage is a simple architecture, but it achieved the lowest accuracy and
+specificity.
+
+The VGG-like model uses repeated small 3x3 convolutions and global average
+pooling, giving it the fewest parameters and FLOPs while achieving the best
+test performance. Its disadvantage is that its deeper sequential structure
+does not provide residual connections.
+
+The ResNet-like model uses skip connections, which provide alternative paths
+for information and gradients and can make deeper networks easier to train.
+However, for this relatively small problem, the additional residual structure
+did not improve performance over B2 and increased both parameter count and
+FLOPs.
+## B4: Grad-CAM Analysis
+Five pneumonia X-rays were randomly selected from the test set using a fixed
+random seed. Grad-cAM was applied to the final convolutional layer of each
+architecture, and the resulting activation maps were overlaid on the original
+X-rays.
+![Grad-CAM Comparison](https://github.com/malepsyche/neural-networks-assignment/blob/main/CNN/outputs/b4/gradcam_comparison.png)
+### Comparison
+The Grad-CAM visualisations show that the three architectures rely on different
+spatial regions when predicting pneumonia.
+- **B1 (AlexNet-like)** generally produces compact, concentrated activation
+  regions, frequently around the central/lower chest
+- **B2 (VGG-like)** produces smaller and more scattered activation regions
+  across the images
+- **B3 (ResNet-like)** produces broader activation regions covering larger
+  portions of the chest
+
+All three models predict the selected pneumonia cases with high confidence,
+but their Grad-CAM maps do not consistently highlight the same regions.
+Furthermore, some strong activations occur near image boundaries or central
+anatomical structures rather than clearly corresponding to visible cloudy
+lung patches.
+
+Therefore, while Grad-CAM indicates which image regions influence each
+model's prediction, these results do not provide strong evidence that the
+models consistently identify the clinically relevant regions containing pneumonia patches.
