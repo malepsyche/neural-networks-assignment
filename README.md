@@ -271,9 +271,9 @@ One limitation of FeatureAblation is that the resulting importance scores depend
 The optimal learning rate was **1e-3**, which achieved the lowest validation
 classification error of **0.0134**.
 
-![Validation Loss](outputs/b1/validation_loss.png)
+![Validation Loss](https://github.com/malepsyche/neural-networks-assignment/blob/main/CNN/outputs/b1/validation_loss.png)
 
-![Validation Accuracy](outputs/b1/validation_accuracy.png)
+![Validation Accuracy](https://github.com/malepsyche/neural-networks-assignment/blob/main/CNN/outputs/b1/validation_accuracy.png)
 
 ### Discussion
 The curves show that **1e-5 converges slowly**, while 1e-4 and 1e-3 converge
