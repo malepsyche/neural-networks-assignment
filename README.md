@@ -1,5 +1,11 @@
 # neural-networks-assignment
 ## A1
+### How to run
+`cd hdb-price-prediction-assignment/src`
+A1: run `python a1_tune.py` and `python a1_final_train.py`
+A2: run `python a2_ablation.py`
+A3: run `python a3_wide_deep.py`
+A4: run `python a4_feature_ablation.py`
 ### Baseline Model Architecture
 ```mermaid
 flowchart TD
