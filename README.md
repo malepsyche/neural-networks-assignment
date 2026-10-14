@@ -1,11 +1,17 @@
 # neural-networks-assignment
-## A1
-### How to run
-`cd hdb-price-prediction-assignment/src`
-A1: run `python a1_tune.py` and `python a1_final_train.py`
-A2: run `python a2_ablation.py`
-A3: run `python a3_wide_deep.py`
+## How to run Part A
+`cd hdb-price-prediction-assignment/src`\
+A1: run `python a1_tune.py` and `python a1_final_train.py`\
+A2: run `python a2_ablation.py`\
+A3: run `python a3_wide_deep.py`\
 A4: run `python a4_feature_ablation.py`
+## How to run Part B
+`cd CNN/src`\
+B1: run `python a1_tune.py` and `python a1_final_train.py`\
+B2: run `python a2_ablation.py`\
+B3: run `python a3_wide_deep.py`\
+B4: run `python a4_feature_ablation.py`
+## A1 
 ### Baseline Model Architecture
 ```mermaid
 flowchart TD
@@ -250,3 +256,41 @@ However, attribution magnitudes changed for several features. For example, the i
 The results are also consistent with the A2 ablation experiment, where removing the categorical embeddings degraded predictive performance. Two of the three highest-ranked features, flat_model_type and town, are categorical.
 
 One limitation of FeatureAblation is that the resulting importance scores depend on the chosen baseline. Continuous features were replaced by their training mean, while categorical features were replaced by the unknown-category value. Different baselines could therefore result in different attribution magnitudes and feature rankings.
+
+## B1: AlexNet-like CNN
+### Learning Rate Selection
+
+    | Learning Rate | Best Epoch | Validation Loss | Classification Error | Sensitivity | Specificity |
+    |---|---:|---:|---:|---:|---:|
+    | 1e-5 | 50 | 0.1601 | 0.0592 | 0.9614 | 0.8815 |
+    | 1e-4 | 36 | 0.0649 | 0.0191 | 0.9820 | 0.9778 |
+    | **1e-3** | **50** | **0.1191** | **0.0134** | **0.9897** | **0.9778** |
+    | 1e-2 | 29 | 0.0854 | 0.0153 | 0.9923 | 0.9630 |
+    | 1e-1 | 31 | 0.1028 | 0.0248 | 0.9794 | 0.9630 |
+
+The optimal learning rate was **1e-3**, which achieved the lowest validation
+classification error of **0.0134**.
+
+![Validation Loss](outputs/b1/validation_loss.png)
+
+![Validation Accuracy](outputs/b1/validation_accuracy.png)
+
+### Discussion
+The curves show that **1e-5 converges slowly**, while 1e-4 and 1e-3 converge
+considerably faster. **1e-3 achieved the best validation accuracy**, whereas
+the larger learning rates 1e-2 and 1e-1 showed greater fluctuations,
+indicating less stable convergence.
+
+Sensitivity and specificity are required in addition to accuracy because
+accuracy can hide differences in performance between the two classes.
+Sensitivity measures correct detection of positive cases, while specificity
+measures correct detection of negative cases.
+### Test Results
+    | Metric | Result |
+    |---|---:|
+    | Accuracy | **85.42%** |
+    | Sensitivity | **99.49%** |
+    | Specificity | **61.97%** |
+The high sensitivity but substantially lower specificity shows that the
+model performs very differently across the two classes, which would not be
+apparent from accuracy alone.
