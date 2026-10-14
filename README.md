@@ -158,8 +158,8 @@ There is little evidence of substantial underfitting. Although the training RMSE
         Baseline  99,173.2406 5,620.7437   0.6598  0.0395
     No Embeddings 111,889.0250 4,457.3152   0.5676  0.0347
         Sigmoid  96,683.1500 7,449.7880   0.6760  0.0480
-![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/ablation/ablation_r2.png)
-![](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/ablation/ablation_rmse.png)
+![RMSE](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/ablation/ablation_r2.png)
+![R^2](https://github.com/malepsyche/neural-networks-assignment/blob/main/hdb-price-prediction-assignment-main/outputs/ablation/ablation_rmse.png)
 ### Discussion of ablation experiments:
 The ablation experiments demonstrate that the categorical embeddings make an important contribution to predictive performance. The baseline model achieved a mean test RMSE of SGD 99,173 ± 5,621 and mean R^2 of 0.6598 ± 0.0395 across five seeds. Removing all categorical embeddings increased the mean RMSE to SGD 111,889 ± 4,457 and reduced mean R^2 to 0.5676 ± 0.0347. This corresponds to an approximately 12.8% increase in RMSE, indicating that the categorical variables provide substantial predictive information beyond that contained in the six continuous features.
 
